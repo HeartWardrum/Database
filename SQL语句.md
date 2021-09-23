@@ -197,3 +197,19 @@ GO
 SELECT * FROM dbo.f_GoodsType('家用电器');
 ```
 
+# 权限管理
+
+## 授权语句
+
+GRANT  [^SELECT] ON  [tableName] TO  [userName];
+
+[^SELECT]:或者INSERT  UPDATE  DELETE  REFERENCES  EXECUTE
+
+```T-SQL
+--  授权用户User_Name对Table_Name表具有SELECT权限
+GRANT SELECT ON Table_Name To User_Name
+--  使用GRANT OPTION选项，授予用户Wanida对vEmployee视图中EmployeeID列具有REFERENCES权限
+GRANT REFERENCES(EmployeeID) ON vEmployee TO Wanida
+WITH GRANT OPTION -- 指示该主体还可以向其他主体授予所指定的权限
+```
+

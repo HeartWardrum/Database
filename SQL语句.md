@@ -215,7 +215,7 @@ WITH GRANT OPTION -- 指示该主体还可以向其他主体授予所指定的�
 
 # 触发器
 
-## 1、后触发器
+### 1.前触发器(INSTEAD OF 触发器)
 
 ~~~~sql
 --创建保证销售单据表中使用的会员卡是有效日期内的会员卡的触发器
@@ -227,5 +227,15 @@ AS
                  WHERE SaleDate NOT BETWEEN StartDate AND EndDate)
     INSERT INTO Table_SaleBill SELECT * FROM insterted;
 
+~~~~
+
+### 2.后触发器
+
+* 视图中不能使用
+
+### 3.删除触发器
+
+~~~~sql
+DROP TRIGGER CardValid;
 ~~~~
 

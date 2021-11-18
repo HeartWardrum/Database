@@ -2,7 +2,7 @@
 
 ### 创建存储过程
 
-````T-SQL
+````sql
 --计算两个数的乘积
 CREATE PROCEDURE p_multi
 	@var1 INT = 5,@var2 INT,@var3 INT OUTPUT
@@ -16,7 +16,7 @@ SET @var3 = @var1 * @var2;
 
 ~~EXEC p_multi 7,@res OUTPUT~~
 
-````T-SQL
+````sql
 DECLARE @res INT
 EXEC p_multi 5,7,@res OUTPUT
 PRINT @res;
@@ -25,7 +25,7 @@ PRINT @res;
 
 ##### 2.按参数名传递值
 
-````T-SQL
+````sql
 DECLARE @res INT
 EXEC p_multi @var2 = 7,@var3 = @res OUTPUT
 PRINT @res;
@@ -33,7 +33,7 @@ PRINT @res;
 
 ### 若将上述两段代码放在一起则要再中间加 'GO'
 
-````T-SQL
+````sql
 CREATE PROC p_multi
 @var1 INT = 5,@var2 INT,@var3 INT OUTPUT
 AS
@@ -46,7 +46,7 @@ PRINT @res;
 
 ### 删除存储过程
 
-````T-SQL
+````sql
 DROP PROC p_multi
 ````
 
@@ -54,7 +54,7 @@ DROP PROC p_multi
 
 例2：
 
-````T-SQL
+````sql
 --  删除销售日期在指定年份之前的销售单据明细表中的记录
 CREATE PROC p_Delete
 @year INT
@@ -68,7 +68,7 @@ AS
 
 例3：
 
-````T-SQL
+````sql
 --  将指定类别商品的单价降低5%
 CREATE PROC p_Update
 @class CHAR(10)
@@ -98,7 +98,7 @@ AS
 
 例1：
 
-````T-SQL
+````sql
 --输入长宽高 求体积
 CREATE FUNCTION dbo.CubicVolume(@length INT,@width INT,@height INT)
 RETURNS INT		--返回类型
@@ -115,7 +115,7 @@ DROP　FUNCTION dbo.CubicVolume;
 
 例2：
 
-````T-SQL
+````sql
 --  查询指定商品类别的商品种类数
 CREATE FUNCTION dbo.f_GoodsCount(@class varchar(10))
 RETURNS INT
@@ -143,7 +143,7 @@ DROP FUNCTION dbo.f_GoodsCount;
 
 例：
 
-````T-SQL
+````sql
 --  创建查询指定类别的商品名称和单价的内联表值函数
 CREATE FUNCTION f_GoodsInfo(@class CHAR(10))
 RETURNS TABLE		-- 返回值类型是表
@@ -163,7 +163,7 @@ SELECT * FROM f_GoodsInfo('服装');
 ## 3.多语句表值函数
 
 
-```T-SQL
+```sql
 /*  定义查询指定类别商品的名称、单价、生产日期和新旧商品的多语句表值函数，其中新旧商品的值为：
 生产月数>12个月  ->  旧商品
 6个月<生产月数<12个月  ->  一般商品
@@ -205,11 +205,27 @@ GRANT  [^SELECT] ON  [tableName] TO  [userName];
 
 [^SELECT]:或者INSERT  UPDATE  DELETE  REFERENCES  EXECUTE
 
-```T-SQL
+```sql
 --  授权用户User_Name对Table_Name表具有SELECT权限
 GRANT SELECT ON Table_Name To User_Name
 --  使用GRANT OPTION选项，授予用户Wanida对vEmployee视图中EmployeeID列具有REFERENCES权限
 GRANT REFERENCES(EmployeeID) ON vEmployee TO Wanida
 WITH GRANT OPTION -- 指示该主体还可以向其他主体授予所指定的权限
 ```
+
+# 触发器
+
+## 1、后触发器
+
+~~~~sql
+--创建保证销售单据表中使用的会员卡是有效日期内的会员卡的触发器
+CREATE TRIGGER CardValid 
+	ON Table_SaleBill INSTEAD OF INSERT,UPDATE 
+AS
+	IF NOT EXISTS(SELECT * FROM inserted AS a
+                 JOIN Table_Card AS b ON a.CardID = b.CardID
+                 WHERE SaleDate NOT BETWEEN StartDate AND EndDate)
+    INSERT INTO Table_SaleBill SELECT * FROM insterted;
+
+~~~~
 
